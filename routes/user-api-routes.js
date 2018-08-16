@@ -17,14 +17,13 @@ module.exports = function(app) {
         });
     });
 
-    app.post("/api/user", function(req, res){
+    app.post("/api/create", function(req, res){
         console.log(req.body);
-        db.user.create({
-            name: req.body.name,
-            password: req.body.password,
-            email: req.body.email
-        }).then(function(){
-            res.json();
+        db.User.create({
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            user_password: req.body.password,
+            user_email: req.body.email
         });
     });
 
