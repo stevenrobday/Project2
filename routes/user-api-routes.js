@@ -4,7 +4,7 @@ module.exports = function(app) {
 
     app.get("/", function(req, res){
 
-        res.json()
+        res.json(dbUser)
     });
 
     app.get("/api/user", function(req, res){
@@ -13,7 +13,7 @@ module.exports = function(app) {
                 id:req.body.id
             }
         }).then(function(){
-            res.json();
+            res.json(dbUser);
         });
     });
 
