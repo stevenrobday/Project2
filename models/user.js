@@ -1,11 +1,11 @@
 module.exports = function(sequelize, DataTypes) {
-  var User = sequelize.define("Login", {
+  var User = sequelize.define("User", {
     // Giving the Author model a name of type STRING
     name: DataTypes.STRING
   });
 
   User.associate = function(models) {
-      User.hasMany(models.Favorite, models.Comments, {
+      User.hasMany(models.Favorite, {
           foreignKey: {
               allowNull: false
           }
@@ -13,5 +13,5 @@ module.exports = function(sequelize, DataTypes) {
       });
   };
   
-return Login;
+return User;
 };
