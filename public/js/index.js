@@ -18,6 +18,12 @@ $(function () {
   M.AutoInit();
   $('.modal').modal();
 
+  $(".dropdown-trigger").dropdown({
+    coverTrigger: false,
+    constrainWidth: false,
+    closeOnClick: false
+ });
+
   function plusIt(val) {
     return val.replace(/ /g, "+");
   }
@@ -188,29 +194,104 @@ $(function () {
         method: "GET"
       });
     },
-    createUser: function (user) {
+    findUser: function (user) {
       return $.ajax({
         headers: {
           "Content-Type": "application/json"
         },
         type: "POST",
-        url: "api/create",
+        url: "api/find",
         data: JSON.stringify(user)
+      });
+    },
+    login: function(user){
+      return $.ajax({
+        headers: {
+          "Content-Type": "application/json"
+        },
+        type: "POST",
+        url: "api/login",
+        data: JSON.stringify(user)
+      });
+    },
+    comment: function(data){
+      return $.ajax({
+        headers: {
+          "Content-Type": "application/json"
+        },
+        type: "POST",
+        url: "api/comment",
+        data: JSON.stringify(data)
+      });
+    },
+    authUser: function(){
+      return $.ajax({
+        headers: {
+          "Content-Type": "application/json"
+        },
+        type: "GET",
+        url: "api/authuser"
+      });
+    },
+    getComments: function(data){
+      return $.ajax({
+        headers: {
+          "Content-Type": "application/json"
+        },
+        type: "POST",
+        url: "api/comments",
+        data: JSON.stringify(data)
       });
     }
   };
 
+  $("#login").on("submit", function (e){
+    e.preventDefault();
+    console.log($("#email").val());
+    var user = {
+      password: $("#password").val(),
+      email: $("#email").val()
+    };
+
+    API.login(user).then(function(res){
+      if(!res.login){
+        $("#password").val("");
+        $("#failure").text("You have failed!");
+      }
+      else{
+        window.location = res.redirect;
+      }
+    });
+  });
+
   $create.on("submit", function (e) {
     e.preventDefault();
+    var $password = $("#password");
+    var $confirmPassword = $("#confirmPassword");
+    var $emailExists = $("#emailExists");
+
+    $emailExists.text("");
+    $("#matchPasswords").text("");
+
+    if($password.val() !== $confirmPassword.val()){
+      $("#matchPasswords").text("These passwords must match!");
+      return;
+    }
+
     var user = {
       first_name: $("#first_name").val().trim(),
       last_name: $("#last_name").val().trim(),
-      password: $("#password").val().trim(),
-      email: $("#email").val().trim(),
+      password: $password.val(),
+      email: $("#email").val()
     };
 
-    API.createUser(user).then(function () {
-      console.log("nyello");
+    API.findUser(user).then(function(res){
+      if(!res.created){
+        $emailExists.text("We already have a guy with that email address!");
+      }
+      else{
+        window.location = res.redirect;
+      }
     });
   });
 
@@ -240,8 +321,6 @@ $(function () {
     var plusedTitle = plusIt(val);
     var searchURL = utellyUrl + "country=us&term=" + plusedTitle;
 
-    var titlesArray = [];
-
     API.searchUtelly(searchURL).then(function (res) {
 
       var length = res.results.length;
@@ -269,8 +348,21 @@ $(function () {
           }
           resultStr += "<span><a href='" + resultUrl + "' target='_blank'>" + resultName + "</a> </span>";
         });
-        resultStr += "</p></div></div></div></li></ul></div></div>";
+        resultStr += "</p></div></div></div></li><li><div class='collapsible-header'>Comments</div><div class='collapsible-body'><div data-allComments='" + title + "'><form class='commentForm' data-comment='" + title + "'><input class='comment'><label for='comment'>Post a thing!</label><div><button type='submit' class='waves-effect waves-light btn'>POST IT</button></div><div data-commentFail='" + title + "'></div></form></div></div></li></ul></div></div>";
         $options.append(resultStr);
+
+        var dataObj = {
+          title: title
+        };
+
+        API.getComments(dataObj).then(function(response){
+          console.log(response);
+          response.forEach(function(el){
+            var $allComments = $("div[data-allComments='" + el.title + "']");
+            console.log(el["User.first_name"]);
+            $allComments.append("<div class='borderThis'>" + el["User.first_name"] + " " + el["User.last_name"] + "</div><div>" + el.body + "</div>");
+          });
+        });
 
         var oUrl = omdbUrl + "?apikey=" + omdbAPI + "&t=" + title;
         var tUrl = tmdbUrlBasic + type + "?api_key=" + tmdbAPI + "&query=" + title;
@@ -333,5 +425,32 @@ $(function () {
 
 
     $modalContent.html("<div class='row'><div class='col s4'><img src='" + personSrc + "'></div><div class='col s8'>" + personBio + "</div></div>");
+  });
+
+  $(document).on("submit", ".commentForm", function (e) {
+    e.preventDefault();
+    var title = $(this).attr("data-comment");
+    var body = $(this).children($(".comment")).val();
+    $(this).children($(".comment")).val("");
+    API.authUser().then(function(res){
+      if(!res.userID){
+        $("div[data-commentFail='" + title + "']").text("You need to log in to perform that action!");
+      }
+      else{
+        var data = {
+          title: title,
+          body: body,
+          user_id: res.userID
+        };
+        API.comment(data).then(function(data2){
+          API.getComments(data).then(function(response){
+            response.forEach(function(el){
+              var $allComments = $("div[data-allComments='" + title + "']");
+              $allComments.append("<div class='borderThis'>" + el["User.first_name"] + " " + el["User.last_name"] + "</div><div>" + el.body + "</div>");
+            });
+          });
+        });
+      }
+    });
   });
 });

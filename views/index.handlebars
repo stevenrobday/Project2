@@ -4,6 +4,21 @@
     <nav>
       <div class="nav-wrapper">
         <a href="#" class="brand-logo center">TeleAdvise</a>
+        <span class="right">{{{content}}}</span>
+        <ul id='dropdown1' class='dropdown-content'>
+          <li>
+            <form id="login">
+              <input id="email" type="email" class="validate" required>
+              <label for="email">Email</label>
+          <input id="password" type="password" class="validate" required>
+          <label for="password">Password</label>
+          <div class="center">
+            <div id="failure"></div>
+            <button type="submit" class="waves-effect waves-light btn">SIGN IN</button>
+          </div>
+          </form>
+          </li>
+        </ul>
       </div>
     </nav>
     <p id="white"></p>
@@ -56,8 +71,8 @@
               </div>
             </li>
           </ul>
-          </div>
-          <div class="col s6 m6">
+        </div>
+        <div class="col s6 m6">
           <ul class="collapsible">
             <li>
               <div class="collapsible-header">
