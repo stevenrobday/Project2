@@ -1,32 +1,36 @@
 var db = require("../models");
+var cookieParser = require('cookie-parser');
 
+var content = '<a class="dropdown-trigger" coverTrigger="false" href="#" data-target="dropdown1">Log In</a> or <a href="create">Sign Up</a>';
 module.exports = function (app) {
-  // Load index page
-  // app.get("/", function(req, res) {
-  //   db.Example.findAll({}).then(function(dbExamples) {
-  //     res.render("index", {
-  //       msg: "Welcome!",
-  //       examples: dbExamples
-  //     });
-  //   });
-  // });
-
-  // // Load example page and pass in an example by id
-  // app.get("/example/:id", function(req, res) {
-  //   db.Example.findOne({ where: { id: req.params.id } }).then(function(dbExample) {
-  //     res.render("example", {
-  //       example: dbExample
-  //     });
-  //   });
-  // });
-
-  // // Render 404 page for any unmatched routes
-  // app.get("*", function(req, res) {
-  //   res.render("404");
-  // });
-
   app.get("/", function (req, res) {
-    res.render("index");
+    var cookie = cookieParser.signedCookies(req.cookies, 'bill bob');
+    if (cookie['connect.sid']) {
+      db.Session.findOne({
+        where: {
+          sid: cookie['connect.sid']
+        }
+      }).then(function (data) {
+        if(data){
+          var resArray = data.dataValues.data.split(",");
+          var userId = resArray[4].replace(/"userId":/, "");
+          userId = userId.replace(/}/, "");
+          db.User.findOne({
+            where: {
+              id: userId
+            }
+          }).then(function (data2){
+            res.render("index", { content: "Welcome, " + data2.dataValues.first_name });
+          });
+        }
+        else{
+          res.render("index", { content: content });
+        }
+      });
+    }
+    else{
+      res.render("index", { content: content });
+    }
   });
 
   app.get("/create", function (req, res) {

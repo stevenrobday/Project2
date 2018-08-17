@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes) {
-    var Comments = sequelize.define("Comments", {
+    var Comment = sequelize.define("Comment", {
         title: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -14,15 +14,13 @@ module.exports = function(sequelize, DataTypes) {
           len: [1,500]
         }
       },
-      
+      user_id: DataTypes.INTEGER    
     });
-    Comments.associate = function(models){
-      Comments.belongsTo(models.User, {
-            foreignKey: {
-              allowNull: false,
-            }
-      });
 
+    Comment.associate = function(models){
+      Comment.belongsTo(models.User, {
+            foreignKey: 'user_id'
+      });
     }
-    return Comments;
+    return Comment;
   };

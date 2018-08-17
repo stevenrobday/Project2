@@ -1,8 +1,11 @@
+*{
+  margin: 0;
+}
+
 body {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-
 }
 #logo {
   height: 100px;
@@ -28,4 +31,9 @@ img{
 
 .main{
   height: 100%;
+}
+
+.borderThis{
+  margin-top: 20px;
+  border-top: 1px solid #000;
 }
