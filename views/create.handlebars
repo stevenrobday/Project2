@@ -1,48 +1,51 @@
 <div class="main container grey lighten-3">
-            <nav>
-                <div class="nav-wrapper">
-                    <a href="#" class="brand-logo center">TeleAdvise</a>
-                </div>
-            </nav>
-            <br>
-            <h5 class="center">Create Login</h5>
-            <br>
-            <div class="row">
-                <form id="create" class="col s12">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input id="email" type="email" class="validate">
-                            <label for="email">Email</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s6">
-                            <input id="first_name" type="text" class="validate">
-                            <label for="first_name">First Name</label>
-                        </div>
-                        <div class="input-field col s6">
-                            <input id="last_name" type="text" class="validate">
-                            <label for="last_name">Last Name</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s6">
-                            <input id="password" type="password" class="validate">
-                            <label for="password">Password</label>
-                        </div>
-                        <div class="input-field col s6">
-                            <input id="confirmPassword" type="password" class="validate">
-                            <label for="confirmPassword">Confirm Password</label>
-                        </div>
-                    </div>
-                    <div class="center">
-                    <button type="submit" class="waves-effect waves-light btn">SIGN UP</button>
-                    </div>
-                    <br>
-                    <br>
-                </form>
-            </div>
-            <footer class="page-footer s12 center">
-                Copyright
-            </footer>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo center">TeleAdvise</a>
         </div>
+    </nav>
+    <br>
+    <h5 class="center">Create Login</h5>
+    <br>
+    <div class="row">
+        <form id="create" class="col s12">
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="email" type="email" class="validate" required>
+                    <label for="email">Email</label>
+                    <span class="helper-text" data-error="that's not an email address..."></span>
+                    <span id="emailExists"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="first_name" type="text" class="validate" required>
+                    <label for="first_name">First Name</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="last_name" type="text" class="validate" required>
+                    <label for="last_name">Last Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="password" type="password" class="validate" required>
+                    <label for="password">Password</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="confirmPassword" type="password" class="validate" required>
+                    <label for="confirmPassword">Confirm Password</label>
+                    <p id="matchPasswords"></p>
+                </div>
+            </div>
+            <div class="center">
+                <button type="submit" class="waves-effect waves-light btn">SIGN UP</button>
+            </div>
+            <br>
+            <br>
+        </form>
+    </div>
+    <footer class="page-footer s12 center">
+        Copyright
+    </footer>
+</div>

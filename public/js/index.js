@@ -188,13 +188,13 @@ $(function () {
         method: "GET"
       });
     },
-    createUser: function (user) {
+    findUser: function (user) {
       return $.ajax({
         headers: {
           "Content-Type": "application/json"
         },
         type: "POST",
-        url: "api/create",
+        url: "api/find",
         data: JSON.stringify(user)
       });
     }
@@ -202,15 +202,32 @@ $(function () {
 
   $create.on("submit", function (e) {
     e.preventDefault();
+    var $password = $("#password");
+    var $confirmPassword = $("#confirmPassword");
+    var $emailExists = $("#emailExists");
+
+    $emailExists.text("");
+    $("#matchPasswords").text("");
+
+    if($password.val() !== $confirmPassword.val()){
+      $("#matchPasswords").text("These passwords must match!");
+      return;
+    }
+
     var user = {
       first_name: $("#first_name").val().trim(),
       last_name: $("#last_name").val().trim(),
-      password: $("#password").val().trim(),
-      email: $("#email").val().trim(),
+      password: $password.val(),
+      email: $("#email").val()
     };
 
-    API.createUser(user).then(function () {
-      console.log("nyello");
+    API.findUser(user).then(function(res){
+      if(!res.created){
+        $emailExists.text("We already have a guy with that email address!");
+      }
+      else{
+        window.location = res.redirect;
+      }
     });
   });
 
